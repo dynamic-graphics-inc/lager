@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 setup(name='lager',
-      version='0.0.1',
+      version='0.1.0',
       description='lager ~ the sweet logging module',
       long_description='coming soon',
       classifiers=[
@@ -18,8 +18,8 @@ setup(name='lager',
           'Programming Language :: Python :: Implementation :: PyPy'
       ],
       keywords='logging',
-      repository='https://github.com/jessekrubin/lager',
-      url='https://upload.pypi.org/legacy/',
+      url='https://github.com/jessekrubin/lager',
+      # url='https://upload.pypi.org/legacy/',
       author_email='jessekrubin@gmail.com',
       author='jessekrubin',
       license='MIT',
