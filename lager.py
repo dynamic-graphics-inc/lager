@@ -5,6 +5,8 @@ import logging
 
 __version__ = '0.3.0'
 
+LAGER = None
+
 LAGER_OPERATORS = {
     "-" : logging.DEBUG,
     "+" : logging.INFO,
