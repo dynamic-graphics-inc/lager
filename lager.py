@@ -1,51 +1,69 @@
+# -*- coding: utf-8 -*-
 import os
-from pprint import pprint
-import functools
-from os import path
 import logging.config
 import logging
-import yaml
-from functools import wraps
 
-LOG_OPERATORS = {
-    "-": logging.DEBUG,
-    "+": logging.INFO,
-    "*": logging.WARN,
+__version__ = '0.1.0'
+
+LAGER_OPERATORS = {
+    "-" : logging.DEBUG,
+    "+" : logging.INFO,
+    "*" : logging.WARN,
     "**": logging.ERROR,
-    "%": logging.CRITICAL
-}
-# logging.config.dictConfig({
-LAGER_ONTAP = {'disable_existing_loggers': False,
-               'formatters': {'simple': {'format': '%(asctime)s - %(name)s - %(levelname)s - '
-                                                   '%(message)s'}},
-               'handlers': {'console': {'class': 'logging.StreamHandler',
-                                        'formatter': 'simple',
-                                        'level': 'DEBUG',
-                                        'stream': 'ext://sys.stdout'},
-                            'error_file_handler': {'backupCount': 20,
-                                                   'class': 'logging.handlers.RotatingFileHandler',
-                                                   'encoding': 'utf8',
-                                                   'filename': 'E.log',
-                                                   'formatter': 'simple',
-                                                   'level': 'ERROR',
-                                                   'maxBytes': 10485760},
-                            'info_file_handler': {'backupCount': 20,
-                                                  'class': 'logging.handlers.RotatingFileHandler',
-                                                  'encoding': 'utf8',
-                                                  'filename': 'I.log',
-                                                  'formatter': 'simple',
-                                                  'level': 'INFO',
-                                                  'maxBytes': 10485760}},
-               'loggers': {'my_module': {'handlers': ['console'],
-                                         'level': 'ERROR',
-                                         'propagate': False}},
-               'root': {'handlers': ['console', 'info_file_handler', 'error_file_handler'],
-                        'level': 'INFO'},
-               'version': 1}
+    "%" : logging.CRITICAL
+    }
 
-class Lager:
+class ConsoleFilter(logging.Filter):
+    def __init__(self, param=None):
+        self.param = param
+
+    def filter(self, record):
+        if self.param is None:
+            allow = True
+        else:
+            allow = self.param in record.msg
+        if allow:
+            record.msg = record.msg.replace(self.param, '')
+        return allow
+
+LAGER_ONTAP = {
+    'version'                 : 1,
+    'disable_existing_loggers': False,
+    'formatters'              : {
+        'simple':
+            {'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s'}},
+    'filters'                 : {
+        'console_filter': {
+            '()'   : ConsoleFilter,
+            'param': '__NO_CONSOLE__'
+            }
+        },
+    'handlers'                : {
+        'console_handler': {'class'    : 'logging.StreamHandler',
+                            'filters'  : ['console_filter'],
+                            'formatter': 'simple',
+                            'level'    : 'DEBUG',
+                            'stream'   : 'ext://sys.stdout'},
+        'file_handler'   : {'backupCount': 20,
+                            'class'      : 'logging.handlers.RotatingFileHandler',
+                            'encoding'   : 'utf8',
+                            'filename'   : 'lager.log',
+                            'formatter'  : 'simple',
+                            'level'      : 'DEBUG',
+                            'maxBytes'   : 10485760},
+        },
+    'root'                    : {
+        'handlers': [
+            'console_handler',
+            'file_handler'
+            ],
+        'level'   : 'DEBUG'},
+    }
+
+class Lager(logging.Logger):
     def __init__(self,
-                 default_log_level=logging.INFO,
+                 logging_cfg_dict=LAGER_ONTAP,
+                 operator_cfg_dict=LAGER_OPERATORS,
                  env_key='LOG_CFG'):
         """Setup logging configuration
         """
@@ -53,36 +71,63 @@ class Lager:
         if value:
             path = value
             print(path)
-        logging.config.dictConfig(LAGER_ONTAP)
-        # else:
-        #     logging.basicConfig(level=default_log_level)
+        logging.config.dictConfig(logging_cfg_dict)
+        self.log_ops = operator_cfg_dict
 
     @staticmethod
     def log(level, msg):
         logging.log(level, msg)
 
-    def __add__(self, msg: str):
-        self.log(logging.INFO, msg)
+    def __add__(self, msg):
+        Lager.log(self.log_ops['+'], msg)
         return self
 
-    def __isub__(self, msg: str):
-        """Pretty slick way of logging
-        :param msg:
-        :return:
-        """
-        logging.info(msg)
+    def __sub__(self, msg):
+        Lager.log(self.log_ops['-'], msg)
         return self
 
-    def __imul__(self, error_msg: str):
-        logging.error(error_msg)
+    def __mul__(self, msg):
+        Lager.log(self.log_ops['*'], msg)
         return self
 
-    def debug(self, msg):
-        logging.debug(msg)
+    def __pow__(self, msg, modulo=None):
+        Lager.log(self.log_ops['**'], msg)
+        return self
 
+    def __mod__(self, msg):
+        Lager.log(self.log_ops['%'], msg)
+        return self
+
+    def __iadd__(self, msg):
+        return self.__add__('{} __NO_CONSOLE__'.format(msg))
+
+    def __isub__(self, msg):
+        return self.__sub__('{} __NO_CONSOLE__'.format(msg))
+
+    def __imul__(self, msg):
+        return self.__mul__('{} __NO_CONSOLE__'.format(msg))
+
+    def __ipow__(self, msg):
+        return self.__pow__('{} __NO_CONSOLE__'.format(msg))
+
+    def __imod__(self, msg):
+        return self.__mod__('{} __NO_CONSOLE__'.format(msg))
 
 # setup_logging()
-frog: Lager = Lager()
-frog += "yay this is the log"
-frog -= "yay this is the log"
-frog -= 'this is also a log'
+if __name__ == '__main__':
+    captains_log = Lager()
+
+    captains_log + "NO CONSOLE info +"
+    captains_log += "YES CONSOLE info +="
+
+    captains_log - "NO CONSOLE debug -"
+    captains_log -= "YES CONSOLE debug -="
+
+    captains_log * "NO CONSOLE *"
+    captains_log *= "YES CONSOLE *="
+
+    captains_log ** "NO CONSOLE **"
+    captains_log **= "YES CONSOLE **="
+
+    captains_log % "NO CONSOLE %"
+    captains_log %= "YES CONSOLE %="
