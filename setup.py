@@ -8,7 +8,7 @@ except ImportError:
     from distutils.core import setup
 setup(
     name='lager',
-    version='0.3.0',
+    version='0.4.0',
     description='lager ~ a sweet way to log',
     long_description='coming soon',
     classifiers=[
