@@ -25,7 +25,7 @@ setup(
     author_email='jessekrubin@gmail.com',
     author='jessekrubin',
     license='MIT license',
-    packages=find_packages(),
+    py_modules=["lager"],
     install_requires=[
         ],
     include_package_data=True,
