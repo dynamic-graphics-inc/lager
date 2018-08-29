@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='lager',
-    version='0.1.0',
+    version='0.2.0',
     description='lager ~ a sweet way to log',
     long_description='coming soon',
     classifiers=[
