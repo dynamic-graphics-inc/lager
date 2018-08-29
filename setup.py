@@ -1,7 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from setuptools import setup, find_packages
+from __future__ import with_statement
 
+# Six is a dependency of setuptools, so using setuptools creates a
+# circular dependency when building a Python stack from source. We
+# therefore allow falling back to distutils to install six.
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 setup(
     name='lager',
     version='0.3.0',
