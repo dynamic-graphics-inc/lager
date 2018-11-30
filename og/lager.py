@@ -66,14 +66,17 @@ class Lager(logging.Logger):
     def __init__(self,
                  logging_cfg_dict=LAGER_ONTAP,
                  operator_cfg_dict=LAGER_OPERATORS,
-                 env_key='LOG_CFG'):
+                 env_key='LOG_CFG',
+                 level=logging.INFO):
         """Setup logging configuration
         """
+        # super(logging.Logger, self).__init__()
+        logging.Logger.__init__(self)
         value = os.getenv(env_key, None)
         if value:
             path = value
             print(path)
-        logging.config.dictConfig(logging_cfg_dict)
+        self = logging.config.dictConfig(logging_cfg_dict)
         self.log_ops = operator_cfg_dict
 
     @staticmethod
@@ -115,6 +118,8 @@ class Lager(logging.Logger):
     def __imod__(self, msg):
         return self.__mod__('{} __NO_CONSOLE__'.format(msg))
 
+# LAGER = Lager(logging_cfg_dict=LAGER_ONTAP, operator_cfg_dict=LAGER_OPERATORS)
+LAGER = Lager()
 # setup_logging()
 if __name__ == '__main__':
     captains_log = Lager()
