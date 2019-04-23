@@ -1,7 +1,16 @@
+# -*- coding: utf-8 -*-
+"""
+EZ PZ logging
+"""
+from logging import CRITICAL
+from logging import DEBUG
+from logging import ERROR
+from logging import FileHandler
 import logging
-from logging import DEBUG, WARN, ERROR, CRITICAL, WARNING
 from logging import INFO
-from logging.handlers import RotatingFileHandler
+from logging import StreamHandler
+from logging import WARNING
+from logging import handlers
 
 from pythonjsonlogger import jsonlogger
 from structlog import configure
@@ -23,6 +32,7 @@ _LOG_LEVELS = {
     'critical': CRITICAL,
     'c'       : CRITICAL,
     }
+LAGERS = {}
 
 configure(
     context_class=threadlocal.wrap_dict(dict),
@@ -39,6 +49,7 @@ configure(
         processors.UnicodeDecoder(),
         stdlib.render_to_log_kwargs]
     )
+
 
 def pour_lager(
     name=None,
@@ -59,31 +70,40 @@ def pour_lager(
                 )
     elif level not in _LOG_LEVELS.values():
         raise ValueError('Not a valid log_level')
-    _logger = getLogger(name or __name__)
+
+    _logger = logging.getLogger(name or __name__)
     _json_formatter = jsonlogger.JsonFormatter(
         '(message) (timestamp) (level) (name) (pathname) (lineno)'
         )
     if log2stderr:
-        c_handler = logging.StreamHandler()
-        c_handler.setLevel(logging.INFO)
+        c_handler = StreamHandler()
+        c_handler.setLevel(INFO)
         c_handler.setFormatter(_json_formatter)
         _logger.addHandler(c_handler)
     if logfile:
         if maxBytes:
-            f_handler = logging.handlers.RotatingFileHandler(logfile, maxBytes=maxBytes)
+            f_handler = handlers.RotatingFileHandler(logfile, maxBytes=maxBytes)
             f_handler.setLevel(logfile_level or level)
             f_handler.setFormatter(_json_formatter)
             _logger.addHandler(f_handler)
         else:
-            f_handler = logging.FileHandler(logfile, mode=logfile_mode)
+            f_handler = FileHandler(logfile, mode=logfile_mode)
             f_handler.setLevel(logfile_level or level)
             f_handler.setFormatter(_json_formatter)
             _logger.addHandler(f_handler)
-    _logger.propagate = True
+    _logger.propagate = False
     _logger.setLevel(INFO)
-    return _logger
+    return getLogger(name or __name__)
 
-LOG = pour_lager()
+def find_lager(name=__name__):
+    if LAGERS.get(name):
+        return LAGERS.get(name)
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)
+    LAGERS[name] = logger
+    return logger
+
+LOG = find_lager()
 
 if __name__ == '__main__':
     pass
