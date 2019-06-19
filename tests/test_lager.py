@@ -23,5 +23,3 @@ def test_write_stdthing():
     logger.info('yeah yeah yeah')
 
 
-
-class dgfile:
