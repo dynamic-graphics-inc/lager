@@ -1,0 +1,19 @@
+[
+{"message": "some bulllllll shit", "timestamp": "2019-06-19T04:01:05.180658Z", "level": "info", "name": "lager", "pathname": "/Users/jesserubin/lager/decs.py", "lineno": 6, "howdy": "someshit", "logger": "lager"},
+{"message": "some shit", "timestamp": "2019-06-19T04:01:37.972003Z", "level": "info", "name": "lager", "pathname": "/Users/jesserubin/lager/decs.py", "lineno": 5, "logger": "lager"},
+{"message": "some bulllllll shit", "timestamp": "2019-06-19T04:01:37.972446Z", "level": "info", "name": "lager", "pathname": "/Users/jesserubin/lager/decs.py", "lineno": 6, "howdy": "someshit", "logger": "lager"},
+{"message": "some shit", "timestamp": "2019-06-19T04:02:11.412787Z", "level": "info", "name": "lager", "pathname": "/Users/jesserubin/lager/decs.py", "lineno": 5, "logger": "lager"},
+{"message": "some bulllllll shit", "timestamp": "2019-06-19T04:02:11.413257Z", "level": "info", "name": "lager", "pathname": "/Users/jesserubin/lager/decs.py", "lineno": 6, "howdy": "someshit", "logger": "lager"},
+{"message": "some shit", "timestamp": "2019-06-19T04:02:34.627234Z", "level": "info", "name": "lager", "pathname": "/Users/jesserubin/lager/decs.py", "lineno": 5, "logger": "lager"},
+{"message": "some bulllllll shit", "timestamp": "2019-06-19T04:02:34.627693Z", "level": "info", "name": "lager", "pathname": "/Users/jesserubin/lager/decs.py", "lineno": 6, "howdy": "someshit", "logger": "lager"},
+{"message": "some shit", "timestamp": "2019-06-19T04:03:05.527834Z", "level": "info", "name": "lager", "pathname": "/Users/jesserubin/lager/decs.py", "lineno": 5, "logger": "lager"},
+{"message": "some bulllllll shit", "timestamp": "2019-06-19T04:03:05.528318Z", "level": "info", "name": "lager", "pathname": "/Users/jesserubin/lager/decs.py", "lineno": 6, "howdy": "someshit", "logger": "lager"},
+{"message": "some shit", "timestamp": "2019-06-19T04:03:38.947046Z", "level": "info", "name": "lager", "pathname": "/Users/jesserubin/lager/decs.py", "lineno": 5, "logger": "lager"},
+{"message": "some bulllllll shit", "timestamp": "2019-06-19T04:03:38.947526Z", "level": "info", "name": "lager", "pathname": "/Users/jesserubin/lager/decs.py", "lineno": 6, "howdy": "someshit", "logger": "lager"},
+{"message": "some shit", "timestamp": "2019-06-19T04:03:57.221339Z", "level": "info", "name": "lager", "pathname": "decs.py", "lineno": 5, "logger": "lager"},
+{"message": "some bulllllll shit", "timestamp": "2019-06-19T04:03:57.221861Z", "level": "info", "name": "lager", "pathname": "decs.py", "lineno": 6, "howdy": "someshit", "logger": "lager"},
+{"message": "some shit", "timestamp": "2019-06-19T04:04:34.661086Z", "level": "info", "name": "lager", "pathname": "decs.py", "lineno": 5, "logger": "lager"},
+{"message": "some bulllllll shit", "timestamp": "2019-06-19T04:04:34.661581Z", "level": "info", "name": "lager", "pathname": "decs.py", "lineno": 6, "howdy": "someshit", "logger": "lager"},
+{"message": "some shit", "timestamp": "2019-06-19T04:05:18.131956Z", "level": "info", "name": "lager", "pathname": "decs.py", "lineno": 5, "logger": "lager"},
+{"message": "some bulllllll shit", "timestamp": "2019-06-19T04:05:18.132525Z", "level": "info", "name": "lager", "pathname": "decs.py", "lineno": 6, "howdy": "someshit", "logger": "lager"}
+]
