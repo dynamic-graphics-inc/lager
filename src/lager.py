@@ -15,7 +15,6 @@ from logging import WARNING
 from logging import handlers
 
 from colorama import Fore
-# from logging import getLogger
 from rapidjson import dumps
 from structlog import configure
 from structlog import getLogger
@@ -28,26 +27,25 @@ try:
 except ImportError:
     curses = None
 
-# Setup colorama on Windows
-if os.name == 'nt':
+if os.name == "nt":
     from colorama import init as colorama_init
 
     colorama_init()
 _LOG_FILE = None
 _LOG_LEVELS = {
-    'debug'   : DEBUG,
-    'd'       : DEBUG,
-    'info'    : INFO,
-    'i'       : INFO,
-    'warning' : WARNING,
-    'w'       : WARNING,
-    'error'   : ERROR,
-    'e'       : ERROR,
-    'critical': CRITICAL,
-    'c'       : CRITICAL,
+    "debug"   : DEBUG,
+    "d"       : DEBUG,
+    "info"    : INFO,
+    "i"       : INFO,
+    "warning" : WARNING,
+    "w"       : WARNING,
+    "error"   : ERROR,
+    "e"       : ERROR,
+    "critical": CRITICAL,
+    "c"       : CRITICAL,
     }
 LAGERS = {}
-DATE_FMT = '%y%m%dT%H:%M:%S'
+DATE_FMT = "%y%m%dT%H:%M:%S"
 RECORD_KEYS = [
     "name",
     "time",
@@ -112,20 +110,14 @@ configure(
         processors.StackInfoRenderer(),
         processors.format_exc_info,
         processors.UnicodeDecoder(),
-        stdlib.render_to_log_kwargs]
+        stdlib.render_to_log_kwargs,
+        ],
     )
 
 def _stderr_colorable():
-    # Colors can be forced with an env variable
-    if os.getenv('LOGZERO_FORCE_COLOR') == '1':
+    if os.name == "nt":
         return True
-
-    # Windows supports colors with colorama
-    if os.name == 'nt':
-        return True
-
-    # Detect color support of stderr with curses (Linux/macOS)
-    if curses and hasattr(sys.stderr, 'isatty') and sys.stderr.isatty():
+    if curses and hasattr(sys.stderr, "isatty") and sys.stderr.isatty():
         try:
             curses.setupterm()
             if curses.tigetnum("colors") > 0:
@@ -138,34 +130,29 @@ def _stderr_colorable():
 
 colorify = "{}{}{}".format
 colors = {
-    'd': Fore.CYAN,
-    'i': Fore.GREEN,
-    'w': Fore.YELLOW,
-    'e': Fore.RED,
+    "d": Fore.CYAN,
+    "i": Fore.GREEN,
+    "w": Fore.YELLOW,
+    "e": Fore.RED
     }
 
 class LagerFormatter(logging.Formatter):
-    def __init__(self,
-                 color=True,
-                 colors=colors
-                 ):
+    def __init__(self, color=True, colors=colors):
         self.color = color
         logging.Formatter.__init__(self, datefmt=DATE_FMT)
 
-        # if color and _stderr_supports_color():
-        #     self._colors = colors
-        #     self._normal = ForegroundColors.RESET
-
     def _dict(self, record):
-        _msg = {k: v for k, v in record.__dict__.items() if k not in RECORD_KEYS}
-        _other = {k: v for k, v in record.__dict__.items() if k in RECORD_KEYS and k not in FILTER}
+        _msg = {
+            k: v for k, v in record.__dict__.items() if k not in RECORD_KEYS
+            }
+        _other = {
+            k: v
+            for k, v in record.__dict__.items()
+            if k in RECORD_KEYS and k not in FILTER
+            }
         return {**_msg, **_other}
 
     def format(self, record):
-        try:
-            message = record.getMessage()
-        except Exception as e:
-            record.message = "Bad message (%r): %r" % (e, record.__dict__)
         record.time = self.formatTime(record, self.datefmt)
         formatted = dumps(self._dict(record))
         if self.color:
@@ -181,18 +168,18 @@ def pour_lager(
     level=DEBUG,
     stderr=True,
     maxBytes=None,
-    logfile_mode='a'
+    logfile_mode="a",
     ):
     if isinstance(level, str):
         try:
             level = _LOG_LEVELS[level.lower()]
         except KeyError as e:
-            log_level_strings = ', '.join(_LOG_LEVELS.keys())
+            log_level_strings = ", ".join(_LOG_LEVELS.keys())
             raise ValueError(
-                'Valid string log levels are: {}'.format(log_level_strings)
+                "Valid string log levels are: {}".format(log_level_strings)
                 )
     elif level not in _LOG_LEVELS.values():
-        raise ValueError('Not a valid log_level')
+        raise ValueError("Not a valid log_level")
 
     _logger = getLogger(name or __name__)
     if stderr:
@@ -203,7 +190,9 @@ def pour_lager(
     if filepath:
         _lager_formatter = LagerFormatter(color=False)
         if maxBytes:
-            f_handler = handlers.RotatingFileHandler(filepath, maxBytes=maxBytes)
+            f_handler = handlers.RotatingFileHandler(
+                filepath, maxBytes=maxBytes
+                )
         else:
             f_handler = FileHandler(filepath, mode=logfile_mode)
         f_handler.setLevel(level)
@@ -212,7 +201,6 @@ def pour_lager(
     _logger.propagate = False
     _logger.setLevel(level)
     return _logger
-    # return getLogger(name or __name__)
 
 def find_lager(name=__name__):
     if LAGERS.get(name):
@@ -223,5 +211,5 @@ def find_lager(name=__name__):
     return logger
 
 # LOG = find_lager()
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass
