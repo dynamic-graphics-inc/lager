@@ -1,7 +1,7 @@
 from lager import pour_lager, flog
 
 
-log = pour_lager(logfile='logs4g.log')
+log = pour_lager(filepath='logs4g.log')
 log.info('some shit')
 log.info('some bulllllll shit', howdy="someshit")
 
