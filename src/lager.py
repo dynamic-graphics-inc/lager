@@ -16,6 +16,7 @@ from logging import handlers
 
 from colorama import Fore
 from rapidjson import dumps
+from rapidjson import loads
 from structlog import configure
 from structlog import getLogger
 from structlog import processors
@@ -209,6 +210,12 @@ def find_lager(name=__name__):
     logger = pour_lager(name=name)
     LAGERS[name] = logger
     return logger
+
+def load_log(filepath):
+    with open(filepath, 'r') as f:
+        data = f.read().splitlines(keepends=False)
+    return [loads(l) for l in data]
+
 
 # LOG = find_lager()
 if __name__ == "__main__":
