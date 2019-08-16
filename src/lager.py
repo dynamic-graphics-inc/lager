@@ -182,7 +182,8 @@ def pour_lager(
     elif level not in _LOG_LEVELS.values():
         raise ValueError("Not a valid log_level")
 
-    _logger = getLogger(name or __name__)
+    _name = (name or __name__)
+    _logger = getLogger(_name)
     if stderr:
         c_handler = StreamHandler()
         c_handler.setLevel(level)
@@ -201,7 +202,7 @@ def pour_lager(
         _logger.addHandler(f_handler)
     _logger.propagate = False
     _logger.setLevel(level)
-    return _logger
+    return logging.getLogger(_name)
 
 def find_lager(name=__name__):
     if LAGERS.get(name):
