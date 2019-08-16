@@ -18,10 +18,9 @@ from colorama import Fore
 from rapidjson import dumps
 from rapidjson import loads
 from structlog import configure
-from structlog import getLogger
+from structlog import threadlocal
 from structlog import processors
 from structlog import stdlib
-from structlog import threadlocal
 
 try:
     import curses
@@ -32,6 +31,7 @@ if os.name == "nt":
     from colorama import init as colorama_init
 
     colorama_init()
+_CONFIGURED = False
 _LOG_FILE = None
 _LOG_LEVELS = {
     "debug"   : DEBUG,
@@ -97,6 +97,18 @@ FILTER = {
     "levelname",
     }
 KEEP = [k for k in RECORD_KEYS if k not in FILTER]
+BASE_LOGGER_NAME = 'LAGER'
+colorify = "{}{}{}".format
+colors = {
+    "d": Fore.CYAN,
+    "i": Fore.GREEN,
+    "w": Fore.YELLOW,
+    "e": Fore.RED,
+    "D": Fore.CYAN,
+    "I": Fore.GREEN,
+    "W": Fore.YELLOW,
+    "E": Fore.RED
+    }
 
 configure(
     context_class=threadlocal.wrap_dict(dict),
@@ -129,16 +141,8 @@ def _stderr_colorable():
 
     return False
 
-colorify = "{}{}{}".format
-colors = {
-    "d": Fore.CYAN,
-    "i": Fore.GREEN,
-    "w": Fore.YELLOW,
-    "e": Fore.RED
-    }
-
 class LagerFormatter(logging.Formatter):
-    def __init__(self, color=True, colors=colors):
+    def __init__(self, color=True):
         self.color = color
         logging.Formatter.__init__(self, datefmt=DATE_FMT)
 
@@ -154,10 +158,12 @@ class LagerFormatter(logging.Formatter):
         return {**_msg, **_other}
 
     def format(self, record):
+        print(record, dir(record))
         record.time = self.formatTime(record, self.datefmt)
         formatted = dumps(self._dict(record))
         if self.color:
-            formatted = colorify(colors[record.level[0]], formatted, Fore.WHITE)
+            # formatted = colorify(colors[record.level[0]], formatted, Fore.WHITE)
+            formatted = colorify(colors[record.levelname[0]], formatted, Fore.WHITE)
         if record.exc_info:
             if not record.exc_text:
                 record.exc_text = self.formatException(record.exc_info)
@@ -183,7 +189,7 @@ def pour_lager(
         raise ValueError("Not a valid log_level")
 
     _name = (name or __name__)
-    _logger = getLogger(_name)
+    _logger = logging.getLogger(_name)
     if stderr:
         c_handler = StreamHandler()
         c_handler.setLevel(level)
@@ -217,7 +223,7 @@ def load_log(filepath):
         data = f.read().splitlines(keepends=False)
     return [loads(l) for l in data]
 
-
-# LOG = find_lager()
 if __name__ == "__main__":
     pass
+    # from doctest import testmod
+    # testmod()
