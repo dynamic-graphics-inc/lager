@@ -2,6 +2,14 @@
 """
 EZ PZ logging
 """
+# =============================================================================
+#  (c) Copyright 2019, Dynamic Graphics, Inc.
+#  ALL RIGHTS RESERVED
+#  Permission to use, copy, modify, or distribute this software for any
+#  purpose is probibited without specific, written prior permission from
+#  Dynamic Graphics, Inc.
+# =============================================================================
+
 import logging
 import os
 import sys
@@ -158,11 +166,9 @@ class LagerFormatter(logging.Formatter):
         return {**_msg, **_other}
 
     def format(self, record):
-        print(record, dir(record))
         record.time = self.formatTime(record, self.datefmt)
         formatted = dumps(self._dict(record))
         if self.color:
-            # formatted = colorify(colors[record.level[0]], formatted, Fore.WHITE)
             formatted = colorify(colors[record.levelname[0]], formatted, Fore.WHITE)
         if record.exc_info:
             if not record.exc_text:
