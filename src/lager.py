@@ -42,19 +42,21 @@ if os.name == "nt":
 _CONFIGURED = False
 _LOG_FILE = None
 _LOG_LEVELS = {
-    "debug"   : DEBUG,
-    "d"       : DEBUG,
-    "info"    : INFO,
-    "i"       : INFO,
-    "warning" : WARNING,
-    "w"       : WARNING,
-    "error"   : ERROR,
-    "e"       : ERROR,
+    "debug": DEBUG,
+    "d": DEBUG,
+    "info": INFO,
+    "i": INFO,
+    "warning": WARNING,
+    "w": WARNING,
+    "error": ERROR,
+    "e": ERROR,
     "critical": CRITICAL,
-    "c"       : CRITICAL,
-    }
+    "c": CRITICAL,
+}
 LAGERS = {}
 DATE_FMT = "%y%m%dT%H:%M:%S"
+TORNADO_FMT = "{color}[{levelname[0]} {asctime} {module}:{lineno}]{end_color} {msg}"
+
 RECORD_KEYS = [
     "name",
     "time",
@@ -82,7 +84,7 @@ RECORD_KEYS = [
     "asctime",
     "color",
     "end_color",
-    ]
+]
 
 FILTER = {
     "created",
@@ -103,9 +105,9 @@ FILTER = {
     "end_color",
     "color",
     "levelname",
-    }
+}
 KEEP = [k for k in RECORD_KEYS if k not in FILTER]
-BASE_LOGGER_NAME = 'LAGER'
+BASE_LOGGER_NAME = "LAGER"
 colorify = "{}{}{}".format
 colors = {
     "d": Fore.CYAN,
@@ -115,8 +117,8 @@ colors = {
     "D": Fore.CYAN,
     "I": Fore.GREEN,
     "W": Fore.YELLOW,
-    "E": Fore.RED
-    }
+    "E": Fore.RED,
+}
 
 configure(
     context_class=threadlocal.wrap_dict(dict),
@@ -132,8 +134,9 @@ configure(
         processors.format_exc_info,
         processors.UnicodeDecoder(),
         stdlib.render_to_log_kwargs,
-        ],
-    )
+    ],
+)
+
 
 def _stderr_colorable():
     if os.name == "nt":
@@ -149,23 +152,46 @@ def _stderr_colorable():
 
     return False
 
+
 class LagerFormatter(logging.Formatter):
-    def __init__(self, color=True):
+    def __init__(self, color=True, tornado=False):
         self.color = color
+        self.tornado = tornado
         logging.Formatter.__init__(self, datefmt=DATE_FMT)
+        self.format = self.tornado_format if tornado else self.json_format
 
     def _dict(self, record):
-        _msg = {
-            k: v for k, v in record.__dict__.items() if k not in RECORD_KEYS
-            }
+        _msg = {k: v for k, v in record.__dict__.items() if k not in RECORD_KEYS}
+
         _other = {
             k: v
             for k, v in record.__dict__.items()
             if k in RECORD_KEYS and k not in FILTER
-            }
+        }
         return {**_msg, **_other}
 
-    def format(self, record):
+    def tornado_format(self, record):
+        record.time = self.formatTime(record, self.datefmt)
+        record.asctime = self.formatTime(record, DATE_FMT)
+        if self.color:
+            record.color = colors[record.levelname[0]]
+            record.end_color = Fore.WHITE
+        else:
+            record.color = record.end_color = ""
+        # formatted = TORNADO_FMT % record.__dict__
+        # TORNADO_FMT = '{color}[{levelname} {asctime} {module}:{lineno}]{end_color} {msg}'.format
+        formatted = TORNADO_FMT.format_map(record.__dict__)
+        if record.exc_info:
+            if not record.exc_text:
+                record.exc_text = self.formatException(record.exc_info)
+        # if record.exc_text:
+        # lines = [formatted.rstrip()]
+        # lines.extend(
+        #     _safe_unicode(ln) for ln in record.exc_text.split('\n'))
+        # formatted = '\n'.join(lines)
+        return formatted.replace("\n", "\n    ")
+
+    def json_format(self, record):
         record.time = self.formatTime(record, self.datefmt)
         formatted = dumps(self._dict(record))
         if self.color:
@@ -175,14 +201,16 @@ class LagerFormatter(logging.Formatter):
                 record.exc_text = self.formatException(record.exc_info)
         return formatted
 
+
 def pour_lager(
     name=None,
     filepath=None,
     level=DEBUG,
     stderr=True,
+    tornado=False,
     maxBytes=None,
     logfile_mode="a",
-    ):
+):
     if isinstance(level, str):
         try:
             level = _LOG_LEVELS[level.lower()]
@@ -190,23 +218,23 @@ def pour_lager(
             log_level_strings = ", ".join(_LOG_LEVELS.keys())
             raise ValueError(
                 "Valid string log levels are: {}".format(log_level_strings)
-                )
+            )
     elif level not in _LOG_LEVELS.values():
         raise ValueError("Not a valid log_level")
 
-    _name = (name or __name__)
+    _name = name or __name__
     _logger = logging.getLogger(_name)
     if stderr:
         c_handler = StreamHandler()
         c_handler.setLevel(level)
-        c_handler.setFormatter(LagerFormatter(color=_stderr_colorable()))
+        c_handler.setFormatter(
+            LagerFormatter(color=_stderr_colorable(), tornado=tornado)
+        )
         _logger.addHandler(c_handler)
     if filepath:
         _lager_formatter = LagerFormatter(color=False)
         if maxBytes:
-            f_handler = handlers.RotatingFileHandler(
-                filepath, maxBytes=maxBytes
-                )
+            f_handler = handlers.RotatingFileHandler(filepath, maxBytes=maxBytes)
         else:
             f_handler = FileHandler(filepath, mode=logfile_mode)
         f_handler.setLevel(level)
@@ -216,6 +244,7 @@ def pour_lager(
     _logger.setLevel(level)
     return logging.getLogger(_name)
 
+
 def find_lager(name=__name__):
     if LAGERS.get(name):
         return LAGERS.get(name)
@@ -224,12 +253,14 @@ def find_lager(name=__name__):
     LAGERS[name] = logger
     return logger
 
+
 def load_log(filepath):
-    with open(filepath, 'r') as f:
+    with open(filepath, "r") as f:
         data = f.read().splitlines(keepends=False)
     return [loads(l) for l in data]
+
 
 if __name__ == "__main__":
     pass
     # from doctest import testmod
-    # testmod()
+    # .format testmod()
