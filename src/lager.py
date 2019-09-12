@@ -240,7 +240,7 @@ def pour_lager(
         f_handler.setLevel(level)
         f_handler.setFormatter(_lager_formatter)
         _logger.addHandler(f_handler)
-    _logger.propagate = False
+    _logger.propagate = True
     _logger.setLevel(level)
     return logging.getLogger(_name)
 
