@@ -42,17 +42,17 @@ if os.name == "nt":
 _CONFIGURED = False
 _LOG_FILE = None
 _LOG_LEVELS = {
-    "debug"   : DEBUG,
-    "d"       : DEBUG,
-    "info"    : INFO,
-    "i"       : INFO,
-    "warning" : WARNING,
-    "w"       : WARNING,
-    "error"   : ERROR,
-    "e"       : ERROR,
+    "debug": DEBUG,
+    "d": DEBUG,
+    "info": INFO,
+    "i": INFO,
+    "warning": WARNING,
+    "w": WARNING,
+    "error": ERROR,
+    "e": ERROR,
     "critical": CRITICAL,
-    "c"       : CRITICAL,
-    }
+    "c": CRITICAL,
+}
 _IS_LAGER = '_IS_LAGER'
 LAGERS = {}
 DATE_FMT = "%y%m%dT%H:%M:%S"
@@ -85,7 +85,7 @@ RECORD_KEYS = [
     "asctime",
     "color",
     "end_color",
-    ]
+]
 
 FILTER = {
     "created",
@@ -106,7 +106,7 @@ FILTER = {
     "end_color",
     "color",
     "levelname",
-    }
+}
 KEEP = [k for k in RECORD_KEYS if k not in FILTER]
 BASE_LOGGER_NAME = "LAGER"
 colorify = "{}{}{}".format
@@ -119,7 +119,7 @@ colors = {
     "I": Fore.GREEN,
     "W": Fore.YELLOW,
     "E": Fore.RED,
-    }
+}
 
 configure(
     context_class=threadlocal.wrap_dict(dict),
@@ -135,8 +135,9 @@ configure(
         processors.format_exc_info,
         processors.UnicodeDecoder(),
         stdlib.render_to_log_kwargs,
-        ],
-    )
+    ],
+)
+
 
 def _stderr_colorable():
     if os.name == "nt":
@@ -152,6 +153,7 @@ def _stderr_colorable():
 
     return False
 
+
 class LagerFormatter(logging.Formatter):
     def __init__(self, color=True, tornado=False):
         self.color = color
@@ -166,7 +168,7 @@ class LagerFormatter(logging.Formatter):
             k: v
             for k, v in record.__dict__.items()
             if k in RECORD_KEYS and k not in FILTER
-            }
+        }
         return {**_msg, **_other}
 
     def tornado_format(self, record):
@@ -200,10 +202,12 @@ class LagerFormatter(logging.Formatter):
                 record.exc_text = self.formatException(record.exc_info)
         return formatted
 
+
 def _remove_handlers(logger):
     for h in logger.handlers:
         if hasattr(h, _IS_LAGER):
             logger.removeHandler(h)
+
 
 def pour_lager(
     name=None,
@@ -214,7 +218,7 @@ def pour_lager(
     maxBytes=None,
     logfile_mode="a",
     propagate=True
-    ):
+):
     if isinstance(level, str):
         try:
             level = _LOG_LEVELS[level.lower()]
@@ -222,7 +226,7 @@ def pour_lager(
             log_level_strings = ", ".join(_LOG_LEVELS.keys())
             raise ValueError(
                 "Valid string log levels are: {}".format(log_level_strings)
-                )
+            )
     elif level not in _LOG_LEVELS.values():
         raise ValueError("Not a valid log_level")
 
@@ -240,7 +244,7 @@ def pour_lager(
         c_handler.setLevel(level)
         c_handler.setFormatter(
             LagerFormatter(color=_stderr_colorable(), tornado=tornado)
-            )
+        )
         _lager.addHandler(c_handler)
     if filepath:
         _lager_formatter = LagerFormatter(color=False)
@@ -254,7 +258,8 @@ def pour_lager(
         _lager.addHandler(f_handler)
     _lager.propagate = propagate
     _lager.setLevel(level)
-    return logging.getLogger(_name)
+    return _lager
+
 
 def find_lager(name=__name__):
     if LAGERS.get(name):
@@ -264,10 +269,12 @@ def find_lager(name=__name__):
     LAGERS[name] = logger
     return logger
 
+
 def load_log(filepath):
     with open(filepath, "r") as f:
         data = f.read().splitlines(keepends=False)
     return [loads(l) for l in data]
+
 
 if __name__ == "__main__":
     pass
