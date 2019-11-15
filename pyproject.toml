@@ -1,14 +1,12 @@
 [tool.poetry]
 name = "lager"
-version = "0.8.8"
+version = "0.9.0"
 description = "ez lager"
 authors = ["jesse rubin <jessekrubin@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.5"
-structlog = "^19.1"
-python-rapidjson = "^0.7.2"
 colorama = "0.3.9"
 
 [tool.poetry.dev-dependencies]
