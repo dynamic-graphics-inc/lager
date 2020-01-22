@@ -1,9 +1,9 @@
-from lager import pour_lager, load_log
+from lager import pour_lager
 
 log = pour_lager()
 log.info('some shit')
 log.debug('some shit')
-log.info('some bulllllll shit', howdy="someshit")
+log.info('some bulllllll shit', howdy="something")
 log.warning('some shit')
 log = pour_lager(filepath='herm.log')
 log.info('ho')
@@ -15,4 +15,4 @@ log.info('ho')
 #     if i % 13 == 0:
 #         log.debug('DDDBUG: ' + str(i))
 
-a = load_log('herm.log')
+# a = load_log('herm.log')
