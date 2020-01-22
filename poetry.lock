@@ -58,6 +58,14 @@ docs = ["sphinx", "rst.linker"]
 testing = ["packaging", "importlib-resources"]
 
 [[package]]
+category = "main"
+description = "Import the best JSON lib"
+name = "jsonbourne"
+optional = false
+python-versions = ">=3.5,<4.0"
+version = "0.1.1"
+
+[[package]]
 category = "dev"
 description = "More routines for operating on iterables, beyond itertools"
 name = "more-itertools"
@@ -199,7 +207,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "contextlib2", "unittest2"]
 
 [metadata]
-content-hash = "eb0c17d37615a166a027a518211fe85044a79e408b495b9f4745ade25efa078b"
+content-hash = "4a83ded599cfbdfdff8fa34e9cd61a3019f6cbfb2b7e99c64635c4e541cbd2e8"
 python-versions = "^3.5"
 
 [metadata.files]
@@ -251,6 +259,10 @@ coverage = [
 importlib-metadata = [
     {file = "importlib_metadata-1.4.0-py2.py3-none-any.whl", hash = "sha256:bdd9b7c397c273bcc9a11d6629a38487cd07154fa255a467bf704cd2c258e359"},
     {file = "importlib_metadata-1.4.0.tar.gz", hash = "sha256:f17c015735e1a88296994c0697ecea7e11db24290941983b08c9feb30921e6d8"},
+]
+jsonbourne = [
+    {file = "jsonbourne-0.1.1-py3-none-any.whl", hash = "sha256:ae62b719d868971ffc032a258152742009522faa4072927cb282c5327c5dc420"},
+    {file = "jsonbourne-0.1.1.tar.gz", hash = "sha256:0a3bb860b726851c921208db888b213c1c3062ab4952ae62167c5ed2ad2240e0"},
 ]
 more-itertools = [
     {file = "more-itertools-8.1.0.tar.gz", hash = "sha256:c468adec578380b6281a114cb8a5db34eb1116277da92d7c46f904f0b52d3288"},

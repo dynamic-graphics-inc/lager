@@ -2,6 +2,9 @@
 """
 python lager ~ a new craft beer
 """
+import os
+import logging
+import inspect
 from inspect import getmodule
 from inspect import stack
 from logging import CRITICAL
@@ -9,7 +12,7 @@ from logging import DEBUG
 from logging import ERROR
 from logging import INFO
 from logging import WARNING
-from logging import FileHandler
+from logging import FileHandler, getLoggerClass, setLoggerClass
 from logging import Formatter
 from logging import StreamHandler
 from logging import getLogger
@@ -17,11 +20,7 @@ from logging import handlers
 from logging import root
 from os import name as osname
 from sys import stderr as _stderr
-
-try:
-    from rapidjson import dumps
-except (ModuleNotFoundError, ImportError):
-    from json import dumps
+from jsonbourne import json
 
 try:
     import curses
@@ -43,10 +42,12 @@ try:
         "i": Fore.GREEN,
         "w": Fore.YELLOW,
         "e": Fore.RED,
+        "c": Fore.MAGENTA,
         "D": Fore.CYAN,
         "I": Fore.GREEN,
         "W": Fore.YELLOW,
         "E": Fore.RED,
+        "C": Fore.MAGENTA,
     }
     _COLOR = True
 except (ModuleNotFoundError, ImportError):
@@ -161,12 +162,21 @@ def _json_record_dict(record):
 class LagerFormatter(Formatter):
     """Lager log formatter"""
 
-    def __init__(self, color=_COLOR, tornado=False):
+    wwww = False
+
+    def __init__(self, color=_COLOR, tornado=False, wwww=False):
         """Formatter constructor"""
         self.color = color
         self.tornado = tornado
         Formatter.__init__(self, datefmt=DATE_FMT)
-        self.format = self.tornado_format if tornado else self.json_format
+        self.wwww = wwww
+        self.format = (
+            self.tornado_format
+            if tornado
+            else self.json_format_wwww
+            if self.wwww
+            else self.json_format
+        )
 
     def tornado_format(self, record):
         """Format with tornado format"""
@@ -188,7 +198,7 @@ class LagerFormatter(Formatter):
         record.time = self.formatTime(record, self.datefmt)
         if record.module == "__main__":
             record.module = f"{record.pathname}::__main__"
-        formatted = dumps(_json_record_dict(record))
+        formatted = json.dumps(record.__dict__)
         if self.color and _COLOR:
             formatted = "".join(
                 (_COLORS[record.levelname[0]], formatted, Fore.WHITE)
@@ -197,6 +207,99 @@ class LagerFormatter(Formatter):
             if not record.exc_text:
                 record.exc_text = self.formatException(record.exc_info)
         return formatted
+
+    def json_format_wwww(self, record):
+        """Format as json"""
+        record.time = self.formatTime(record, self.datefmt)
+        if record.module == "__main__":
+            record.module = f"{record.pathname}::__main__"
+        formatted = json.dumps(_json_record_dict(record))
+        if self.color and _COLOR:
+            formatted = "".join(
+                (_COLORS[record.levelname[0]], formatted, Fore.WHITE)
+            )
+        if record.exc_info:
+            if not record.exc_text:
+                record.exc_text = self.formatException(record.exc_info)
+        return formatted
+
+
+class Lager(logging.Logger):
+    def _calling_frame(self, nback=3):
+        callerframerecord = inspect.stack()[nback]  # 0 represents this line
+        frame = callerframerecord[0]
+        info = inspect.getframeinfo(frame)
+        call_filename = os.path.split(info.filename)[-1]
+        call_fn = "{}:{}".format(call_filename, info.function)
+        return {"lno": info.lineno, "fn": call_fn}
+
+    def _handle_msg(self, msg):
+        if isinstance(msg, str):
+            return msg
+        if isinstance(msg, dict):
+            return json.dumps(msg)
+
+    def _mk_n_handle_record(self, msg, level):
+        rec = self.makeRecord(
+            name=self.name,
+            level=level,
+            **self._calling_frame(3),
+            msg=msg,
+            exc_info=None,
+            args=(),
+        )
+        self.handle(rec)
+
+    def __add__(self, msg):
+        self._mk_n_handle_record(msg, logging.INFO)
+        return self
+
+    def __iadd__(self, msg):
+        self._mk_n_handle_record(msg, logging.INFO)
+        return self
+
+    def __sub__(self, msg):
+        self._mk_n_handle_record(msg, logging.DEBUG)
+        return self
+
+    def __isub__(self, msg):
+        self._mk_n_handle_record(msg, logging.DEBUG)
+        return self
+
+    def __mul__(self, msg):
+        self._mk_n_handle_record(msg, logging.WARNING)
+        return self
+
+    def __imul__(self, msg):
+        self._mk_n_handle_record(msg, logging.WARNING)
+        return self
+
+    def __pow__(self, msg, mod=None):
+        self._mk_n_handle_record(msg, logging.ERROR)
+        return self
+
+    def __ipow__(self, msg, mod=None):
+        self._mk_n_handle_record(msg, logging.ERROR)
+        return self
+
+    def d(self, msg):
+        self._mk_n_handle_record(msg, logging.DEBUG)
+
+    def i(self, msg):
+        self._mk_n_handle_record(msg, logging.INFO)
+
+    def w(self, msg):
+        self._mk_n_handle_record(msg, logging.WARNING)
+
+    def e(self, msg):
+        self._mk_n_handle_record(msg, logging.ERROR)
+
+    def c(self, msg):
+        self._mk_n_handle_record(msg, logging.CRITICAL)
+
+
+# Register the Lager object
+setLoggerClass(Lager)
 
 
 def _remove_handlers(logger):
@@ -239,7 +342,7 @@ def pour_lager(
     _name = name or __name__
     _lager = getLogger(_name)
     for h in _lager.handlers:
-        print(h)
+        # print(h)
         if hasattr(h, _IS_LAGER):
             _lager.removeHandler(h)
             continue
