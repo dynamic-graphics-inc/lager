@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lager"
-version = "0.9.2"
+version = "0.10.0"
 description = "ez lager"
 authors = ["jesse rubin <jessekrubin@gmail.com>"]
 license = "MIT"
