@@ -11,11 +11,7 @@
 
 Lager is a python logging library created primarily because of how fantastic the name is.
 
-It's easy to use!
-
-It's got color support!
-
-It's got JSON support ()!
+It's easy to use! It's got color support! It's got JSON!
 
 ```python
 from lager import pour_lager
