@@ -1,4 +1,4 @@
-# Lager :beer:
+# Lager :beer: ~ small and EZ python logging
 
 <img src="_data/dgpy_logo.svg" alt="drawing" width="120"/> **Dynamic Graphics Python**
 
@@ -9,7 +9,13 @@
 
 **Install:** `pip install lager`
 
-Logging library for python with a sweet name and the use of operators!
+Lager is a python logging library created primarily because of how fantastic the name is.
+
+It's easy to use!
+
+It's got color support!
+
+It's got JSON support ()!
 
 ```python
 from lager import pour_lager
@@ -27,3 +33,7 @@ log.error("hello error")
 log ** "hello error"
 log **= "hello error"
 ```
+
+## Got JSON??
+
+Checkout [jsonbourne](https://github.com/dynamic-graphics-inc/jsonbourne) (if you get the chance)!
