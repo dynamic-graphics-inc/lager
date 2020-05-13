@@ -9,26 +9,7 @@
 
 **Install:** `pip install lager`
 
-Lager is a python logging library created primarily because of how fantastic the name is.
-
-It's easy to use! It's got color support! It's got JSON!
-
-```python
-from lager import pour_lager
-log = pour_lager()  # make logger
-log.info("hello info")
-log + "hello info"
-log += "hello info"
-log.debug("hello debug")
-log - "hello debug"
-log -= "hello debug"
-log.warning("hello warning")
-log * "hello warning"
-log *= "hello warning"
-log.error("hello error")
-log ** "hello error"
-log **= "hello error"
-```
+Lager is a python logging package module created primarily because of how fantastic the name is; lager really provides several utility functions/extensions for loguru (which is an AMAZING lib).
 
 ## Got JSON??
 

@@ -1,3 +1,6 @@
+# Set the default behavior, in case people don't have core.autocrlf set.
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
 * text eol=lf
 *.c text eol=lf
 *.gitattributes text eol=lf
@@ -11,7 +14,13 @@
 *.txt text eol=lf
 *.rst text eol=lf
 *.md text eol=lf
+*.toml text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
 
 # Declare files that will always have CRLF line endings on checkout.
 *.cmd text eol=crlf
 *.bat text eol=crlf
+
+# EXE
+*.exe binary
