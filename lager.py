@@ -11,7 +11,7 @@ from loguru import logger as lager
 from loguru._logger import Logger
 
 
-__version__ = '0.2.0'
+__version__ = "0.2.1"
 
 TORNADO_LOGURU_FMT = "<level>[{level.name[0]} {time:YYMMDDTHH:mm:ss} {name}:{module}:{line}]</level> {message}"
 
