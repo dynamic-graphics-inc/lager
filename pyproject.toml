@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lager"
-version = "0.2.2"
+version = "0.2.3"
 description = "ez lager that uses loguru"
 authors = ["jesse rubin <jessekrubin@gmail.com>"]
 license = "MIT"

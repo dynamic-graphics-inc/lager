@@ -11,7 +11,7 @@ from loguru import logger as lager
 from loguru._logger import Logger
 
 
-__version__ = "0.2.1"
+__version__ = "0.2.3"
 
 TORNADO_LOGURU_FMT = "<level>[{level.name[0]} {time:YYMMDDTHH:mm:ss} {name}:{module}:{line}]</level> {message}"
 
@@ -53,7 +53,7 @@ def loglevel(level: Union[str, int]) -> str:
     }
     if isinstance(level, int):
         return loglevel(str(level))
-    return log_levels[level.lower()]
+    return log_levels[level.strip('\'').strip('\"').lower()]
 
 
 def pour_lager(level="d", filepath=None, stderr=True,) -> Logger:
