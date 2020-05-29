@@ -1,6 +1,5 @@
 .DEFAULT_GOAL := all
-
-PKG_NAME := $(shell cat pyproject.toml | grep name | awk '{print $3}' | sed -e 's/^"//' -e 's/"$//')
+PKG_NAME := $(shell cat pyproject.toml | grep name | awk '{print $$3}' | sed 's/"//g')
 PWD_DIRPATH = .
 TESTS_DIRPATH = ${PWD}/tests
 
