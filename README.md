@@ -1,6 +1,6 @@
 # Lager :beer: ~ small and EZ python logging
 
-<img src="_data/dgpy_logo.svg" alt="drawing" width="120"/> **Dynamic Graphics Python**
+<img src="https://github.com/dynamic-graphics-inc/dgimages/blob/master/dgpy/dgpy_logo.svg?raw=true" alt="drawing" width="120"/> **Dynamic Graphics Python**
 
 [![Wheel](https://img.shields.io/pypi/wheel/lager.svg)](https://img.shields.io/pypi/wheel/lager.svg)
 [![Version](https://img.shields.io/pypi/v/lager.svg)](https://img.shields.io/pypi/v/lager.svg)

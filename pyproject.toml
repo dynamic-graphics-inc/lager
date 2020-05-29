@@ -5,7 +5,7 @@ description = "ez lager that uses loguru"
 authors = ["jesse rubin <jessekrubin@gmail.com>"]
 license = "MIT"
 packages = [
-    { include = "lager.py", from = "." }
+    { include = "lager", from = "." }
 ]
 
 [tool.poetry.dependencies]
