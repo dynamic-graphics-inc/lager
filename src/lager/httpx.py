@@ -15,7 +15,9 @@ class HttpxSink(object):
 
 
     def __call__(self, msg):
-        httpx.post(self.url, data={'msg': msg})
+        httpx.post(self.url, data={
+            'msg': msg
+            })
 
 
     async def handle(self, msg):
@@ -24,7 +26,6 @@ class HttpxSink(object):
 
     async def await_delete_channels(self):
         await self.client.aclose()
-
 
 # @atexit.register
 # def shutdown():

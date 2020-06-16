@@ -1,4 +1,5 @@
 from lager.httpx import HttpxSink
+from lager import LAGER_PORT
 from lager import LOG as log
 import httpx
 
@@ -6,7 +7,7 @@ import httpx
 httpx.post('http://localhost:52437/', data={
     'herm': 234
     })
-httpsink = HttpxSink(url='http://localhost:8080')
+httpsink = HttpxSink(url=f'http://localhost:{LAGER_PORT}')
 log.add(
     httpsink, level="DEBUG",
     serialize=True
