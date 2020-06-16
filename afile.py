@@ -1,6 +1,16 @@
-from lager import lager
+from lager.httpx import HttpxSink
+from lager import LOG as log
+import httpx
 
-log = lager
+
+httpx.post('http://localhost:8080/', data={
+    'herm': 234
+    })
+httpsink = HttpxSink(url='http://localhost:8080')
+log.add(
+    httpsink, level="DEBUG",
+    serialize=True
+    )
 log.info('something else')
 log.debug('something else')
 # log.info('some other thing herm', howdy="something")

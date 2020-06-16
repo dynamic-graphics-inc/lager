@@ -4,17 +4,15 @@ import asyncio
 import sys
 from functools import wraps
 from time import time
-from typing import TYPE_CHECKING
 from typing import Union
 
-from loguru import logger as lager
+from loguru import logger
+from loguru._logger import Logger
 
-if TYPE_CHECKING:
-    from loguru._logger import Logger
 
 VERSION_MAJOR = 0
 VERSION_MINOR = 2
-VERSION_PATCH = 3
+VERSION_PATCH = 4
 VERSION_INFO = (VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH)
 __version__ = f"{VERSION_MAJOR}.{VERSION_MINOR}.{VERSION_PATCH}"
 
@@ -26,8 +24,8 @@ TORNADO_LOGURU_FMT = "".join(
         "{name}:{module}:{line}]",
         "</level> ",
         "{message}",
-    ]
-)
+        ]
+    )
 
 LOGURU_DEFAULT_FMT = "".join(
     [
@@ -38,48 +36,49 @@ LOGURU_DEFAULT_FMT = "".join(
         "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan>",
         " - ",
         "<level>{message}</level>",
-    ]
-)
-lager.t = lager.trace
-lager.d = lager.debug
-lager.i = lager.info
-lager.s = lager.success
-lager.w = lager.warning
-lager.e = lager.error
-lager.c = lager.critical
+        ]
+    )
+logger.t = logger.trace
+logger.d = logger.debug
+logger.i = logger.info
+logger.s = logger.success
+logger.w = logger.warning
+logger.e = logger.error
+logger.c = logger.critical
 
 # commonly used dgpy aliases
-LOG = lager
+log = logger
+LOG = logger
 # ln => natural log
-ln = lager
-LN = lager
+ln = logger
+LN = logger
 
 LOG_LEVELS = {
-    "notset": "NOTSET",
-    "n": "NOTSET",
-    "debug": "DEBUG",
-    "d": "DEBUG",
-    "info": "INFO",
-    "i": "INFO",
-    "s": "SUCCESS",
-    "success": "SUCCESS",
-    "warning": "WARNING",
-    "warn": "WARNING",
-    "w": "WARNING",
-    "error": "ERROR",
-    "e": "ERROR",
+    "notset"  : "NOTSET",
+    "n"       : "NOTSET",
+    "debug"   : "DEBUG",
+    "d"       : "DEBUG",
+    "info"    : "INFO",
+    "i"       : "INFO",
+    "s"       : "SUCCESS",
+    "success" : "SUCCESS",
+    "warning" : "WARNING",
+    "warn"    : "WARNING",
+    "w"       : "WARNING",
+    "error"   : "ERROR",
+    "e"       : "ERROR",
     "critical": "CRITICAL",
-    "fatal": "CRITICAL",
-    "c": "CRITICAL",
+    "fatal"   : "CRITICAL",
+    "c"       : "CRITICAL",
     # enum/enum-strings
-    "0": "NOTSET",
-    "10": "DEBUG",
-    "20": "INFO",
-    "25": "SUCCESS",
-    "30": "WARNING",
-    "40": "ERROR",
-    "50": "CRITICAL",
-}
+    "0"       : "NOTSET",
+    "10"      : "DEBUG",
+    "20"      : "INFO",
+    "25"      : "SUCCESS",
+    "30"      : "WARNING",
+    "40"      : "ERROR",
+    "50"      : "CRITICAL",
+    }
 
 
 def loglevel(level: Union[str, int]) -> str:
@@ -90,12 +89,12 @@ def loglevel(level: Union[str, int]) -> str:
 def pour_lager(level="DEBUG", filepath=None, stderr=True) -> Logger:
     level = loglevel(level)
     if level != "DEBUG":
-        lager.remove()
+        logger.remove()
     if stderr:
-        lager.add(sys.stderr, level=level, serialize=True)
+        logger.add(sys.stderr, level=level, serialize=True)
     if filepath:
-        lager.add(filepath, level=level, serialize=True)
-    return lager
+        logger.add(filepath, level=level, serialize=True)
+    return logger
 
 
 def flog(funk=None, level="debug", enter=True, exit=True):
@@ -126,12 +125,14 @@ def flog(funk=None, level="debug", enter=True, exit=True):
 
     """
 
+
     def _flog(funk):
         name = funk.__name__
 
+
         @wraps(funk)
         def _flog_decorator(*args, **kwargs):
-            logger_ = lager.opt(depth=1)
+            logger_ = logger.opt(depth=1)
             if enter:
                 logger_.log(
                     loglevel(level),
@@ -139,7 +140,7 @@ def flog(funk=None, level="debug", enter=True, exit=True):
                     name,
                     args,
                     kwargs,
-                )
+                    )
             ti = time()
             result = funk(*args, **kwargs)
             tf = time()
@@ -150,12 +151,13 @@ def flog(funk=None, level="debug", enter=True, exit=True):
                     name,
                     result,
                     tf - ti,
-                )
+                    )
             return result
+
 
         @wraps(funk)
         async def _flog_decorator_async(*args, **kwargs):
-            logger_ = lager.opt(depth=7)
+            logger_ = logger.opt(depth=7)
             if enter:
                 logger_.log(
                     loglevel(level),
@@ -163,7 +165,7 @@ def flog(funk=None, level="debug", enter=True, exit=True):
                     name,
                     args,
                     kwargs,
-                )
+                    )
             ti = time()
             result = await funk(*args, **kwargs)
             tf = time()
@@ -174,16 +176,18 @@ def flog(funk=None, level="debug", enter=True, exit=True):
                     name,
                     result,
                     tf - ti,
-                )
+                    )
             return result
+
 
         if asyncio.iscoroutinefunction(funk) or asyncio.iscoroutine(funk):
             return _flog_decorator_async
         return _flog_decorator
+
 
     return _flog(funk) if funk else _flog
 
 
 def handlers():
     """Return all handlers"""
-    return lager._core.handlers
+    return logger._core.handlers
