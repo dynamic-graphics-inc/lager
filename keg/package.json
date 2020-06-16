@@ -5,8 +5,8 @@
   "main": "keg.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "restart": "nodemon server.js"
+    "start": "node keg.js",
+    "restart": "nodemon keg.js"
   },
   "keywords": [],
   "author": "jesse",
