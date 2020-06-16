@@ -2,7 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const jsse = require('jsse')
 const cors = require('cors')
-
+const LAGER_PORT = 52437
 // server app
 const app = express()
 
@@ -21,6 +21,7 @@ app.post('/log', async (req, res) => {
         console.log('HERM something went wrong', e)
     }
 })
+
 app.post('/', async (req, res) => {
     try {
         console.log(req.body)
@@ -34,7 +35,10 @@ const main = async () => {
     // mkdir for the data!
     await jsse.mkdir('data', true) // the true is 'exist_ok'
     // start server where we send data!
-    app.listen(8080, () => console.log(`Started server at http://localhost:8080!`))
+    app.listen(LAGER_PORT, () => {
+            console.log(`Started server at http://localhost:${LAGER_PORT}!`)
+        }
+    )
 }
 main()
 
