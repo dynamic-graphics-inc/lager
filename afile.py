@@ -9,7 +9,8 @@ httpx.post('http://localhost:52437/', data={
     })
 httpsink = HttpxSink(url=f'http://localhost:{LAGER_PORT}')
 log.add(
-    httpsink, level="DEBUG",
+    httpsink.handle,
+    level="DEBUG",
     serialize=True
     )
 log.info('something else')

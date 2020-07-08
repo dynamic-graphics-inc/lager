@@ -16,6 +16,7 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
 app.post('/log', async (req, res) => {
     try {
         console.log(req.body)
+        // console.log(JSON.parse(req.body.msg))
         res.sendStatus(200)
     } catch (e) {
         console.log('HERM something went wrong', e)
@@ -24,7 +25,13 @@ app.post('/log', async (req, res) => {
 
 app.post('/', async (req, res) => {
     try {
-        console.log(req.body)
+        console.log(req.body, req.body.msg)
+        if (req.body.hasOwnProperty('msg')){
+            console.log(JSON.parse(req.body.msg))
+        }
+
+
+        // console.log(JSON.parse(req.body.msg))
         res.sendStatus(200)
     } catch (e) {
         console.log('HERM something went wrong', e)
