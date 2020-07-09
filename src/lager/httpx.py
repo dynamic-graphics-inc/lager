@@ -10,19 +10,14 @@ SINKS = []
 
 
 class HttpxSink(object):
-
-
     def __init__(self, url, *args, **kwargs):
         self.url = url
         self.client = httpx.AsyncClient(*args, **kwargs)
         SINKS.append(self)
 
-
     async def __call__(self, msg):
         print(msg)
-        httpx.post(self.url, data={
-            'msg': msg
-            })
+        httpx.post(self.url, data={'msg': msg})
 
     async def handle(self, message):
         print('async handling', message)
@@ -30,10 +25,7 @@ class HttpxSink(object):
         print(dir(self.client))
         # async with self.client as c:
         #     await c.post(url=self.url, data={'msg': message})
-        await self.client.post(url=self.url, data={
-            'msg': message
-            })
-
+        await self.client.post(url=self.url, data={'msg': message})
 
     async def await_delete_channels(self):
         await self.client.aclose()
@@ -43,6 +35,8 @@ class HttpxSink(object):
     #     print("Shutting down")
     #     loop = asyncio.get_event_loop()
     #     loop.run_until_complete(self.await_delete_channels())
+
+
 #
 # @atexit.register
 # def shutdown():

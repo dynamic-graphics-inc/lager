@@ -8,7 +8,7 @@ from lager._version import (
     __version__,
 )
 from lager.const import LAGER_PORT, LOGURU_DEFAULT_FMT, TORNADO_FMT
-from lager.core import LN, LOG, flog, handlers, ln, log, loglevel
+from lager.core import LN, LOG, flog, handlers, ln, log, logger, loglevel
 
 
 __all__ = [
@@ -20,5 +20,10 @@ __all__ = [
     '__version__',
     'LOGURU_DEFAULT_FMT',
     'TORNADO_FMT',
-    'loglevel'
-    ]
+    'loglevel',
+    'logger',
+    'LOG',
+    'log',
+    'LN',
+    'ln',
+]

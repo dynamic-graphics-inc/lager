@@ -11,23 +11,28 @@ class RecordFile(JsonBaseModel):
     name: str
     path: str
 
+
 class RecordLevel(JsonBaseModel):
     name: str
     no: int
     icon: str
 
+
 class RecordThread(JsonBaseModel):
     id: int
     name: str
+
 
 class RecordProcess(JsonBaseModel):
     id: int
     name: str
 
+
 class RecordException(JsonBaseModel):
     type: Optional[Type[BaseException]]
     value: Optional[BaseException]
     traceback: Optional[TracebackType]
+
 
 class Record(JsonBaseModel):
     elapsed: timedelta
@@ -43,6 +48,7 @@ class Record(JsonBaseModel):
     process: RecordProcess
     thread: RecordThread
     time: datetime
+
 
 class Message(JsonBaseModel):
     record: Record

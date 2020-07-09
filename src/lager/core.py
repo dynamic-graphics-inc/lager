@@ -11,16 +11,7 @@ from loguru import logger
 from lager.const import LOG_LEVELS
 
 
-__all__ = [
-    'loglevel',
-    'flog',
-    'handlers',
-    'logger',
-    'log',
-    'LOG',
-    'ln',
-    'LN'
-    ]
+__all__ = ['loglevel', 'flog', 'handlers', 'logger', 'log', 'LOG', 'ln', 'LN']
 
 logger.t = logger.trace
 logger.d = logger.debug
@@ -41,6 +32,7 @@ LN = logger
 def loglevel(level: Union[str, int]) -> str:
     """Convert log-level abrev to a valid loguru log level"""
     return LOG_LEVELS[str(level).strip("'").strip('"').lower()]
+
 
 def flog(funk=None, level="debug", enter=True, exit=True):
     """Log function (sync/async) enter and exit using this decorator
@@ -70,10 +62,8 @@ def flog(funk=None, level="debug", enter=True, exit=True):
 
     """
 
-
     def _flog(funk):
         name = funk.__name__
-
 
         @wraps(funk)
         def _flog_decorator(*args, **kwargs):
@@ -85,7 +75,7 @@ def flog(funk=None, level="debug", enter=True, exit=True):
                     name,
                     args,
                     kwargs,
-                    )
+                )
             ti = time()
             result = funk(*args, **kwargs)
             tf = time()
@@ -96,9 +86,8 @@ def flog(funk=None, level="debug", enter=True, exit=True):
                     name,
                     result,
                     tf - ti,
-                    )
+                )
             return result
-
 
         @wraps(funk)
         async def _flog_decorator_async(*args, **kwargs):
@@ -110,7 +99,7 @@ def flog(funk=None, level="debug", enter=True, exit=True):
                     name,
                     args,
                     kwargs,
-                    )
+                )
             ti = time()
             result = await funk(*args, **kwargs)
             tf = time()
@@ -121,16 +110,15 @@ def flog(funk=None, level="debug", enter=True, exit=True):
                     name,
                     result,
                     tf - ti,
-                    )
+                )
             return result
-
 
         if asyncio.iscoroutinefunction(funk) or asyncio.iscoroutine(funk):
             return _flog_decorator_async
         return _flog_decorator
 
-
     return _flog(funk) if funk else _flog
+
 
 def handlers():
     """Return all handlers"""

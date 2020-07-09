@@ -40,6 +40,8 @@ Tests for `lager` module.
 #     logger = pour_lager()
 #     logger.info('yeah yeah yeah')
 
+
 def test_lager_port():
     from lager import const
+
     assert const.LAGER_PORT == 52437
