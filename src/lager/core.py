@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 """Python lager brewed by a loguru"""
 import asyncio
+
 from functools import wraps
 from time import time
 from typing import Union
-from lager.const import LOG_LEVELS
+
 from loguru import logger
+
+from lager.const import LOG_LEVELS
+
 
 __all__ = [
     'loglevel',

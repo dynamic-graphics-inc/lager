@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import asyncio
 import atexit
 
-import asyncio
 import httpx
 
 

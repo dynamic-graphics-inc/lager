@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 """Lager & pydantic"""
-from typing import Optional
-from typing import Union
-from typing import Type
+from datetime import datetime, timedelta
 from types import TracebackType
-from datetime import timedelta
-from datetime import datetime
+from typing import Optional, Type, Union
+
 from jsonbourne.pydantic import JsonBaseModel
 
 
