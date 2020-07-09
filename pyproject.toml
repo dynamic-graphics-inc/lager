@@ -2,10 +2,10 @@
 name = "lager"
 version = "0.2.5"
 description = "ez lager that uses loguru"
-authors = ["jesse rubin <jessekrubin@gmail.com>"]
+authors = ["jesse rubin <jesse@dgi.com>"]
 license = "MIT"
 packages = [
-    { include = "lager", from = "src" }
+    { include = "lager", from = "." }
 ]
 
 [tool.poetry.dependencies]
